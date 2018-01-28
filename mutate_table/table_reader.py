@@ -22,7 +22,8 @@ class TableFromCSV(Table):
     """
 
     def __init__(self, file_name, is_header=None):
-        super().__init__(None)
+        super().__init__()
+        self.__header = None
         self.file_name = file_name
         self.csv_file = None
         self.csv_reader = None
@@ -44,11 +45,15 @@ class TableFromCSV(Table):
             self.line_number += 1
 
             if self.is_header(self.line_number, row):
-                self.header = row
+                self.__header = row
                 self.log.debug("Header found at line " + str(self.line_number) + ": " + str(self.header))
                 return
 
         self.log.error("Unable to find header in csv file " + self.file_name)
+
+    @property
+    def header(self):
+        return self.__header
 
     def __enter__(self):
         self.log.debug("With statement enter")

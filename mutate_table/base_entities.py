@@ -1,20 +1,59 @@
 import logging
+import abc
 
 
-class Table:
+class Table(metaclass=abc.ABCMeta):
     """
     Class shows how table looks like - it has header attribute, rows method that yield rows, and also may apply mutation
     to itself
     """
 
-    def __init__(self, header):
-        self.header = header
-
+    @abc.abstractmethod
     def rows(self):
         yield None
 
+    @property
+    @abc.abstractmethod
+    def header(self):
+        return None
+
     def mutate(self, mutation):
         return MutatedTable(self, mutation)
+
+
+class Mutation(metaclass=abc.ABCMeta):
+    """
+    Mutation that actually doesn't change anything
+    """
+
+    @abc.abstractmethod
+    def mutate_header(self, header):
+        """
+        Called to mutate header
+
+        :param header: 
+        :return: 
+        """
+        return header
+
+    @abc.abstractmethod
+    def mutate_row(self, row):
+        """
+        Called for each row
+
+        :param row: 
+        :return: 
+        """
+        return row
+
+    @abc.abstractmethod
+    def end_of_rows(self):
+        """
+        Called when end of row is reached
+
+        :return: 
+        """
+        return None
 
 
 class MutatedTable(Table):
@@ -23,11 +62,16 @@ class MutatedTable(Table):
     """
 
     def __init__(self, table, mutation):
-        super().__init__(mutation.mutate_header(table.header))
+        super().__init__()
+        self.__header = mutation.mutate_header(table.header)
         self.source_table = table
         self.mutation = mutation
         self.log = logging.getLogger(self.__class__.__name__)
         self.line_number = 0
+
+    @property
+    def header(self):
+        return self.__header
 
     def rows(self):
         """
@@ -50,35 +94,3 @@ class MutatedTable(Table):
         mutated_row = self.mutation.end_of_rows()
         if mutated_row is not None:
             yield mutated_row
-
-
-class Mutation:
-    """
-    Mutation that actually doesn't change anything
-    """
-
-    def mutate_header(self, header):
-        """
-        Called to mutate header
-
-        :param header: 
-        :return: 
-        """
-        return header
-
-    def mutate_row(self, row):
-        """
-        Called for each row
-
-        :param row: 
-        :return: 
-        """
-        return row
-
-    def end_of_rows(self):
-        """
-        Called when end of row is reached
-
-        :return: 
-        """
-        return None
