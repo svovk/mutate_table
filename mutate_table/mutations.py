@@ -134,3 +134,44 @@ class JoinColumns(Mutation):
         :return: 
         """
         return None
+
+
+class MapColumn(Mutation):
+    """
+    Mutation that maps one column in table
+    """
+
+    def __init__(self, column, mapper, new_name=None):
+        super().__init__()
+        self.column = column
+        self.mapper = mapper
+        self.new_name = new_name
+
+    def mutate_header(self, header):
+        """
+        Called to mutate header
+
+        :param header: 
+        :return: 
+        """
+        if self.new_name is not None:
+            header[self.column] = self.new_name
+        return header
+
+    def mutate_row(self, row):
+        """
+        Called for each row
+
+        :param row: 
+        :return: 
+        """
+        row[self.column] = self.mapper(row[self.column])
+        return row
+
+    def end_of_rows(self):
+        """
+        Called when end of row is reached
+
+        :return: 
+        """
+        return None

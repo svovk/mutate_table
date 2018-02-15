@@ -7,6 +7,11 @@ import logging
 import csv
 
 
+def sort_column_value(s):
+    tmp = s.split(",")
+    tmp.sort()
+    return ",".join(tmp)
+
 if __name__ == '__main__':
 
     logging.basicConfig(level=logging.DEBUG)
@@ -18,6 +23,7 @@ if __name__ == '__main__':
         mutated_table = source_table.mutate(mt.JoinColumns(9, 15))
         mutated_table = mutated_table.mutate(mt.JoinColumns(10, len(mutated_table.header), ';'))
         mutated_table = mutated_table.mutate(mt.JoinSplitLines())
+        mutated_table = mutated_table.mutate(mt.MapColumn(6, sort_column_value))
 
         with open('output.csv', 'w') as out_handler:
             csv_file = csv.writer(out_handler)

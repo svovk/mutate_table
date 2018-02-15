@@ -7,6 +7,11 @@ import logging
 import csv
 
 
+def sort_column_value(s):
+    tmp = s.split(",")
+    tmp.sort()
+    return ",".join(tmp)
+
 if __name__ == '__main__':
 
     logging.basicConfig(level=logging.DEBUG)
@@ -18,8 +23,9 @@ if __name__ == '__main__':
         mutated_table = source_table.mutate(mt.JoinColumns(8, 14))
         mutated_table = mutated_table.mutate(mt.JoinColumns(9, len(mutated_table.header), ';'))
         mutated_table = mutated_table.mutate(mt.JoinSplitLines())
+        mutated_table = mutated_table.mutate(mt.MapColumn(5, sort_column_value))
 
-        with open('Privilege_Mask_Detail_Report.csv', 'w') as out_handler:
+        with open('Privilege_Mask_Detail_Report_c.csv', 'w') as out_handler:
             csv_file = csv.writer(out_handler)
             csv_file.writerow(mutated_table.header)
 

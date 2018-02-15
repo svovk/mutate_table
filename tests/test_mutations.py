@@ -47,5 +47,22 @@ class JoinSplitterLinesTestCase(unittest.TestCase):
         self.assertEqual(mutated_row, ['3', 'b', 'c', 'd', 'e', 'f'])
 
 
+class MapColumnTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.mutator = mt.MapColumn(2, lambda x: '!' if x == 'Z' else x)
+
+    def test_header(self):
+        mutated_header = self.mutator.mutate_header(['a', 'b', 'c', 'd', 'e', 'f'])
+        self.assertEqual(mutated_header, ['a', 'b', 'c', 'd', 'e', 'f'])
+
+    def test_row(self):
+        mutated_row = self.mutator.mutate_row(['a', 'b', 'c', 'd', 'e', 'f'])
+        self.assertEqual(mutated_row, ['a', 'b', 'c', 'd', 'e', 'f'])
+
+        mutated_row = self.mutator.mutate_row(['a', 'b', 'Z', 'd', 'e', 'f'])
+        self.assertEqual(mutated_row, ['a', 'b', '!', 'd', 'e', 'f'])
+
+
 if __name__ == '__main__':
     unittest.main()
