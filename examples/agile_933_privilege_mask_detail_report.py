@@ -21,7 +21,7 @@ if __name__ == '__main__':
                             as source_table:
 
         mutated_table = source_table.mutate(mt.JoinColumns(9, 15))
-        mutated_table = mutated_table.mutate(mt.JoinColumns(10, len(mutated_table.header), ';'))
+        mutated_table = mutated_table.mutate(mt.JoinColumns(10, len(mutated_table.header), glue=';', new_name='Applied To'))
         mutated_table = mutated_table.mutate(mt.JoinSplitLines())
         mutated_table = mutated_table.mutate(mt.MapColumn(6, sort_column_value))
 

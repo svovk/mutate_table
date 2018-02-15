@@ -95,22 +95,27 @@ class JoinColumns(Mutation):
     Mutation that joins cells of certain columns for each tow 
     """
 
-    def __init__(self, from_column, to_column, glue=' '):
+    def __init__(self, from_column, to_column, glue=' ', new_name=None):
         super().__init__()
         self.from_column = from_column
         self.to_column = to_column
         self.glue = glue
+        self.new_name = new_name
 
     def mutate_header(self, header):
         """
-        Called to mutate header
+        Called to mutate header. By default, the new column name is constructed as a concatenation of column headers we join.
+        If new new_name was provided on the mutator creation it will be the name of the new column.
 
         :param header: 
         :return: 
         """
         result = header[:self.from_column]
-        # TODO: refactor to use something better than rstrip
-        result.append(self.glue.join(header[self.from_column:self.to_column]).rstrip(self.glue))
+        if self.new_name is None:
+            # TODO: refactor to use something better than rstrip
+            result.append(self.glue.join(header[self.from_column:self.to_column]).rstrip(self.glue))
+        else:
+            result.append(self.new_name)
         result += header[self.to_column:]
         return result
 

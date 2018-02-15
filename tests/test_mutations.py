@@ -15,6 +15,11 @@ class JoinColumnsTestCase(unittest.TestCase):
         mutated_row = self.mutator.mutate_row(['a', 'b', 'c', 'd', 'e', 'f'])
         self.assertEqual(mutated_row, ['a', 'b', 'c', 'de', 'f'])
 
+    def test_header_new_name_provided(self):
+        self.mutator.new_name = 'a new name'
+        mutated_header = self.mutator.mutate_header(['a', 'b', 'c', 'd', 'e', 'f'])
+        self.assertEqual(mutated_header, ['a', 'b', 'c', 'a new name', 'f'])
+
 
 class JoinSplitterLinesTestCase(unittest.TestCase):
 
