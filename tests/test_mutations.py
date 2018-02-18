@@ -69,5 +69,27 @@ class MapColumnTestCase(unittest.TestCase):
         self.assertEqual(mutated_row, ['a', 'b', '!', 'd', 'e', 'f'])
 
 
+class RowsFilterTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.filter_result = True
+        self.mutator = mt.RowsFilter(lambda x: self.filter_result)
+
+    def test_header(self):
+        mutated_header = self.mutator.mutate_header(['a', 'b', 'c', 'd', 'e', 'f'])
+        self.assertEqual(mutated_header, ['a', 'b', 'c', 'd', 'e', 'f'])
+
+    def test_row(self):
+        row = ['a', 'b', 'c', 'd', 'e', 'f']
+
+        self.filter_result = True
+        mutated_row = self.mutator.mutate_row(['a', 'b', 'c', 'd', 'e', 'f'])
+        self.assertEqual(mutated_row, row)
+
+        self.filter_result = False
+        mutated_row = self.mutator.mutate_row(['a', 'b', 'c', 'd', 'e', 'f'])
+        self.assertIsNone(mutated_row)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -180,3 +180,42 @@ class MapColumn(Mutation):
         :return: 
         """
         return None
+
+
+class RowsFilter(Mutation):
+    """
+    Mutation that filters table rows
+    """
+
+    def __init__(self, filter):
+        super().__init__()
+        self.filter = filter
+
+    def mutate_header(self, header):
+        """
+        Called to mutate header
+
+        :param header: 
+        :return: 
+        """
+        return header
+
+    def mutate_row(self, row):
+        """
+        Called for each row
+
+        :param row: 
+        :return: 
+        """
+        if self.filter(row):
+            return row
+        else:
+            return None
+
+    def end_of_rows(self):
+        """
+        Called when end of row is reached
+
+        :return: 
+        """
+        return None

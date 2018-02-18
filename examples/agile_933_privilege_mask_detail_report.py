@@ -5,6 +5,7 @@ Example of usage - reformatting Agile PLM Mask Detail Report: joining splitted l
 import mutate_table as mt
 import logging
 import csv
+import re
 
 
 def sort_column_value(s):
@@ -24,6 +25,9 @@ if __name__ == '__main__':
         mutated_table = mutated_table.mutate(mt.JoinColumns(10, len(mutated_table.header), glue=';', new_name='Applied To'))
         mutated_table = mutated_table.mutate(mt.JoinSplitLines())
         mutated_table = mutated_table.mutate(mt.MapColumn(6, sort_column_value))
+        # apply role filter
+        role_pattern = re.compile("Item", flags=re.I)
+        mutated_table = mutated_table.mutate(mt.RowsFilter(lambda x: role_pattern.match(x[6])))
 
         with open('output.csv', 'w') as out_handler:
             csv_file = csv.writer(out_handler)
